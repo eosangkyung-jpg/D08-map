@@ -30,17 +30,18 @@ HTML_틀 = """<!doctype html>
   .안내 { padding: 8px 12px; font-size: 14px; color: #555; }
   .말풍선 { padding: 6px 10px; font-size: 13px; line-height: 1.4; min-width: 160px; }
   .말풍선 b { display: block; }
+  .알림 { margin: 0; padding: 10px 12px; font-size: 15px; background: #fff8e1; border-bottom: 1px solid #f0d58c; }
 </style>
 </head>
 <body>
-<div id="map"></div>
+__알림__<div id="map"></div>
 <p class="안내">지도가 회색이면: ① 카카오맵 사용 설정 ② 지금 주소(포트까지) 등록 ③ 서버 주소로 열기</p>
 <script src="__SDK__?appkey=__JS키__&autoload=false"></script>
 <script>
 const 장소들 = __데이터__;
 kakao.maps.load(function () {
   const map = new kakao.maps.Map(document.getElementById("map"), {
-    center: new kakao.maps.LatLng(37.5665, 126.9780),
+    center: new kakao.maps.LatLng(__중심위도__, __중심경도__),
     level: 5,
   });
   const 범위 = new kakao.maps.LatLngBounds();
@@ -80,8 +81,11 @@ kakao.maps.load(function () {
 """
 
 
-def kakao_map(장소들, 제목="카카오 지도"):
+def kakao_map(장소들, 제목="카카오 지도", 알림=None, 중심=(37.5665, 126.9780)):
     """[{이름, 주소, 위도, 경도}, ...] 를 마커로 찍은 지도 HTML 글자를 돌려준다.
+
+    알림: 지도 위에 보여 줄 안내 한 줄 (없으면 안 보임)
+    중심: 마커가 없을 때 지도를 둘 (위도, 경도). 마커가 있으면 마커에 맞춘다.
 
     KAKAO_JS_KEY 가 없으면 한국어 한 줄로 RuntimeError 를 낸다.
     """
@@ -96,12 +100,18 @@ def kakao_map(장소들, 제목="카카오 지도"):
     # json.dumps 로 넣고, 이름에 </script> 가 있어도 스크립트가 끊기지 않게 </ 를 바꾼다
     데이터_글자 = json.dumps(데이터, ensure_ascii=False).replace("</", "<\\/")
     제목_글자 = 제목.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    알림_글자 = ""
+    if 알림:
+        알림_글자 = '<p class="알림">' + 알림.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;") + "</p>\n"
 
     return (
         HTML_틀.replace("__SDK__", API["지도SDK"])
         .replace("__JS키__", js키)
-        .replace("__데이터__", 데이터_글자)
         .replace("__제목__", 제목_글자)
+        .replace("__알림__", 알림_글자)
+        .replace("__중심위도__", str(float(중심[0])))
+        .replace("__중심경도__", str(float(중심[1])))
+        .replace("__데이터__", 데이터_글자)  # 장소 이름에 __제목__ 같은 글자가 있어도 안 바뀌게 맨 마지막
     )
 
 
