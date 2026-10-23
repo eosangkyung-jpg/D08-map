@@ -3,7 +3,6 @@
 - 요청 주소·헤더·response.url 을 출력하지 않는다 (왜: OpenWeather는 주소 안 appid= 에 키) → 검사: 키 틀리게 하고 출력 확인
 - API 주소는 맨 위 API = { ... } 한 곳에, 각 줄에 # 🔌 → 검사: Ctrl+F 🔌
 - 실패하면 한국어 한 줄, 여러 API 중 하나가 실패해도 나머지는 계속 → 검사: 하나만 틀리게
-- 환율은 기준 시각(time_last_update_utc)을 한국 시간으로, "실시간" 금지 (왜: 무료는 하루 1회 갱신)
 - 커밋은 제안만, 커밋 전에 git status 를 보여 준다
 
 
@@ -84,3 +83,4 @@
 
 ## 실수에서 배운 규칙
 <!-- AI 실수를 찾을 때마다 한 줄씩: - (10/23) (해라/하지 마라) ___ (왜: ___) → 검사: ___ -->
+- (10/23) 해라: `pip install`은 **`streamlit run`·`python`을 실행하는 그 터미널(conda `d8` 환경이 켜진 곳)** 에서 한다. 설치 전에 `python -c "import sys; print(sys.executable)"`로 경로에 `envs\d8`이 있는지 먼저 확인한다. AI는 직접 설치하지 말고 명령만 제안한다. (왜: 파이썬이 여러 개라 다른 곳에 설치하면 `ModuleNotFoundError`가 남 — 10/23 folium이 Python312에만 깔리고 d8에는 없었음) → 검사: 설치한 터미널에서 `python -c "import folium"` 가 에러 없이 끝남

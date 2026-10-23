@@ -3,3 +3,4 @@ python-dotenv
 pandas
 streamlit>=1.66
 openpyxl
+folium
